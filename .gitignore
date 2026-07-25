@@ -1,0 +1,27 @@
+node_modules/
+dist/
+dist-electron/
+coverage/
+.DS_Store
+*.log
+*.tsbuildinfo
+.env
+.env.*
+!.env.example
+private-content/
+jill/
+t480-hardware-report.txt
+
+# Never commit game media, firmware, or save images.
+*.adf
+*.gcm
+*.gcz
+*.iso
+*.n64
+*.rvz
+*.v64
+*.z64
+*.rom
+*.sav
+*.srm
+*.state

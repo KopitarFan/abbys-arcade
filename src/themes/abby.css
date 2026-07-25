@@ -1,0 +1,24 @@
+:root,
+[data-theme='abby'] {
+  --ink: #fff8ff;
+  --muted: #d8bfe4;
+  --panel: rgba(48, 25, 73, .82);
+  --panel-2: rgba(73, 35, 100, .92);
+  --line: rgba(255, 225, 255, .16);
+  --purple: #a66cff;
+  --purple-light: #ddbcff;
+  --pink: #ff72c6;
+  --pink-light: #ffc1e8;
+  --mint: #71e3cf;
+  --coral: #ff809d;
+  --gold: #ffd86f;
+  --blue: #76c9ff;
+  --night-1: #130b27;
+  --night-2: #25103e;
+  --night-3: #39154f;
+  --hero-1: #6d2e8e;
+  --hero-2: #3c236f;
+  --hero-3: #261c55;
+  --focus: #fff4a8;
+}
+

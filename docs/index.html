@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Abby's Arcade is a whimsical, controller-first retro game library for kids and families." />
+    <meta name="theme-color" content="#24103e" />
+    <title>Abby's Arcade</title>
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="stars" aria-hidden="true"></div>
+    <header class="site-header">
+      <a class="brand" href="#top"><span>✦</span> Abby's Arcade</a>
+      <nav aria-label="Main navigation">
+        <a href="#systems">Systems</a>
+        <a href="#safety">Safety</a>
+        <a href="#roadmap">Roadmap</a>
+        <a class="nav-cta" href="https://github.com/KopitarFan/abbys-arcade">GitHub</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">A magical little game library</p>
+          <h1>Old adventures.<br /><span>A new doorway.</span></h1>
+          <p class="lede">A controller-first arcade that makes classic games approachable for kids—wrapped in a safe, joyful interface designed for Abby.</p>
+          <div class="hero-actions">
+            <a class="primary" href="https://github.com/KopitarFan/abbys-arcade">Follow the build</a>
+            <a class="secondary" href="#roadmap">See what’s next</a>
+          </div>
+          <div class="status"><span></span> Early development · macOS prototype running</div>
+        </div>
+        <figure class="hero-art">
+          <img src="./assets/jungle-adventure.jpg" alt="An original red-haired adventurer leaping through colorful magical jungle ruins." />
+          <figcaption>Original artwork created for the prototype</figcaption>
+        </figure>
+      </section>
+
+      <section class="promise" aria-label="Project principles">
+        <article><span>♥</span><h2>Made for kids</h2><p>Big choices, friendly language, mouse and controller navigation, and a playful Abby-centric default theme.</p></article>
+        <article><span>⌁</span><h2>Parent managed</h2><p>Games enter through a grown-up import flow with test launches, constrained settings, and library health checks.</p></article>
+        <article><span>◇</span><h2>Hardware flexible</h2><p>Developed on macOS, designed for Linux deployment, and built around replaceable emulator adapters.</p></article>
+      </section>
+
+      <section id="systems" class="section">
+        <p class="eyebrow">Four worlds, one library</p>
+        <div class="section-heading"><h2>Systems in the arcade</h2><p>Each emulator stays behind the same simple game card and return-to-arcade experience.</p></div>
+        <div class="systems">
+          <article class="dos"><strong>DOS</strong><span>DOSBox-X</span><p>Classic PC adventures with per-game speed and display settings.</p></article>
+          <article class="amiga"><strong>AMIGA</strong><span>FS-UAE</span><p>ADF floppy support with parent-supplied Kickstart firmware.</p></article>
+          <article class="n64"><strong>N64</strong><span>Mupen64Plus</span><p>Cartridge images, isolated saves, and controller-first play.</p></article>
+          <article class="cube"><strong>GAMECUBE</strong><span>Dolphin</span><p>ISO, GCM, and RVZ support through supervised native launching.</p></article>
+        </div>
+      </section>
+
+      <section id="safety" class="section safety">
+        <div>
+          <p class="eyebrow">Simple on the outside, careful underneath</p>
+          <h2>Built with a parent-controlled boundary</h2>
+          <p>Game metadata never becomes a shell command. Every import is validated, staged, and approved before it appears in the child’s library.</p>
+        </div>
+        <ul>
+          <li>Allowlisted emulator adapters</li>
+          <li>Versioned, validated manifests</li>
+          <li>Isolated saves and configuration</li>
+          <li>Traversal and symlink protection</li>
+          <li>Structured launch diagnostics</li>
+          <li>No ROMs or firmware in the repository</li>
+        </ul>
+      </section>
+
+      <section id="roadmap" class="section roadmap">
+        <p class="eyebrow">Where the path leads</p>
+        <div class="section-heading"><h2>From retro library to creation studio</h2><p>The long-term goal is not only playing games—it’s helping Abby imagine and create her own.</p></div>
+        <ol>
+          <li class="done"><span>01</span><div><strong>Arcade foundation</strong><p>Whimsical launcher, managed library, safe imports, and supervised emulator exits.</p></div></li>
+          <li class="current"><span>02</span><div><strong>Controller-first polish</strong><p>Persistent profiles, per-game mappings, appliance mode, and kid-friendly recovery.</p></div></li>
+          <li><span>03</span><div><strong>Portable deployment</strong><p>Packaged macOS and Linux installers with first-run checks and backup tools.</p></div></li>
+          <li><span>04</span><div><strong>Agentic game maker</strong><p>Speech-assisted ideas transformed into small, editable games Abby can call her own.</p></div></li>
+        </ol>
+      </section>
+    </main>
+
+    <footer><span>Made with care for Abby ♥</span><span>Independent family project · No game files included</span></footer>
+  </body>
+</html>

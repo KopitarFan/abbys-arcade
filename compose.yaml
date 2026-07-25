@@ -1,0 +1,14 @@
+services:
+  arcade-ui:
+    build: .
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/workspace
+      - arcade-node-modules:/workspace/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+
+volumes:
+  arcade-node-modules:
+
