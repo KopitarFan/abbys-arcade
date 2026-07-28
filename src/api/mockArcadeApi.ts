@@ -144,6 +144,10 @@ export const mockArcadeApi: ArcadeApi = {
   async testImport() { throw new Error('Import testing is available in the desktop app.'); },
   async updateGame() { return true; },
   async getLibraryHealth() {
-    return { root: 'Browser demo library', installed: games.length, valid: games.length, issues: [], runtimes: { dos: true, amiga: true, n64: true, gamecube: true }, amigaFirmware: true };
+    return {
+      root: 'Browser demo library', installed: games.length, valid: games.length, issues: [],
+      runtimes: { dos: true, amiga: true, n64: true, gamecube: true, nes: true, snes: true, atari2600: true, genesis: true, c64: true, apple2: true, apple2gs: true },
+      amigaFirmware: true, apple2Firmware: true, apple2gsFirmware: true,
+    };
   },
 };

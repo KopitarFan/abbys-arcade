@@ -6,6 +6,7 @@ export interface GameLibraryPaths {
   games: string;
   firmware: string;
   amigaFirmware: string;
+  apple2Firmware: string;
   imports: string;
   cache: string;
   logs: string;
@@ -28,6 +29,7 @@ export function getGameLibraryPaths(userDataPath: string, override = process.env
     games: path.join(root, 'games'),
     firmware: path.join(root, 'firmware'),
     amigaFirmware: path.join(root, 'firmware', 'amiga'),
+    apple2Firmware: path.join(root, 'firmware', 'apple2'),
     imports: path.join(root, 'imports'),
     cache: path.join(root, 'cache'),
     logs: path.join(root, 'logs'),

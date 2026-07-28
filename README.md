@@ -13,6 +13,13 @@ overlay.
 - Amiga — FS-UAE (`.adf`, parent-supplied Kickstart firmware)
 - Nintendo 64 — Mupen64Plus (`.z64`, `.n64`, `.v64`)
 - GameCube — Dolphin (`.iso`, `.gcm`, `.rvz`)
+- NES — Nestopia UE (`.nes`)
+- SNES — Snes9x (`.sfc`, `.smc`)
+- Atari 2600 — Stella (`.a26`, `.bin`)
+- Sega Genesis — ares (`.md`, `.gen`, `.bin`)
+- Commodore 64 — VICE x64sc (`.d64`, `.t64`, `.prg`, `.crt`)
+- Apple IIe — MAME (`.dsk`, `.do`, `.po`, `.nib`, `.woz`; parent-supplied `apple2e.zip` ROM set)
+- Apple IIgs — MAME (`.dsk`, `.do`, `.po`, `.nib`, `.woz`, `.2mg`, `.moof`; parent-supplied ROM 03 `apple2gs.zip` set)
 
 No games, ROMs, disc images, BIOS files, or firmware are included.
 

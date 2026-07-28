@@ -76,6 +76,27 @@ describe('game manifest security', () => {
     expect(() => validateEntry('../Adventure.iso', 'gamecube')).toThrow();
   });
 
+  it('accepts the additional cartridge and home-computer formats', () => {
+    const systems = [
+      ['nes-game', 'nes', 'nestopia', 'Adventure.nes'],
+      ['snes-game', 'snes', 'snes9x', 'Adventure.sfc'],
+      ['atari-game', 'atari2600', 'stella', 'Adventure.a26'],
+      ['genesis-game', 'genesis', 'ares', 'Adventure.gen'],
+      ['c64-game', 'c64', 'vice-x64sc', 'Adventure.d64'],
+      ['apple2-game', 'apple2', 'mame-apple2e', 'Adventure.woz'],
+      ['apple2gs-game', 'apple2gs', 'mame-apple2gs', 'Adventure.2mg'],
+    ] as const;
+    for (const [id, platform, adapter, entry] of systems) {
+      expect(validateManifest({
+        ...validManifest,
+        id,
+        platform,
+        launch: { adapter, entry, settings: { fullscreen: true } },
+      })).toMatchObject({ platform, launch: { adapter, entry } });
+      expect(validateEntry(entry, platform)).toBe(entry);
+    }
+  });
+
   it('rejects platform mismatches and unsupported media', () => {
     expect(() => validateManifest({
       ...validManifest,

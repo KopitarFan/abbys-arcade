@@ -35,6 +35,15 @@ const gamecubeManifest: GameManifest = {
   platform: 'gamecube',
   launch: { adapter: 'dolphin', entry: 'Demo.rvz', settings: { fullscreen: true, videoBackend: 'Metal' } },
 };
+const additionalManifests: GameManifest[] = [
+  { ...jillManifest, id: 'nes-demo', platform: 'nes', launch: { adapter: 'nestopia', entry: 'Demo.nes', settings: { fullscreen: true } } },
+  { ...jillManifest, id: 'snes-demo', platform: 'snes', launch: { adapter: 'snes9x', entry: 'Demo.sfc', settings: { fullscreen: true } } },
+  { ...jillManifest, id: 'atari-demo', platform: 'atari2600', launch: { adapter: 'stella', entry: 'Demo.a26', settings: { fullscreen: true } } },
+  { ...jillManifest, id: 'genesis-demo', platform: 'genesis', launch: { adapter: 'ares', entry: 'Demo.gen', settings: { fullscreen: true } } },
+  { ...jillManifest, id: 'c64-demo', platform: 'c64', launch: { adapter: 'vice-x64sc', entry: 'Demo.d64', settings: { fullscreen: true } } },
+  { ...jillManifest, id: 'apple2-demo', platform: 'apple2', launch: { adapter: 'mame-apple2e', entry: 'Demo.woz', settings: { fullscreen: true } } },
+  { ...jillManifest, id: 'apple2gs-demo', platform: 'apple2gs', launch: { adapter: 'mame-apple2gs', entry: 'Demo.2mg', settings: { fullscreen: true } } },
+];
 
 describe('platform launch allowlist', () => {
   it('builds Jill commands from the application root, never catalog data', () => {
@@ -84,6 +93,38 @@ describe('platform launch allowlist', () => {
         '/Library/Arcade/games/gamecube-demo/content/Demo.rvz',
       ]),
     });
+  });
+
+  it('builds approved launch targets for the additional systems', () => {
+    const targets = additionalManifests.map((manifest) => getPlatformTarget(
+      manifest.id, 'darwin', '/Library/Arcade/games', 'arm64', manifest,
+    ));
+    expect(targets.map((target) => target.executable)).toEqual([
+      '/opt/homebrew/bin/nestopia',
+      '/Applications/Snes9x.app/Contents/MacOS/Snes9x',
+      '/opt/homebrew/bin/stella',
+      '/Applications/ares.app/Contents/MacOS/ares',
+      '/opt/homebrew/bin/x64sc',
+      '/opt/homebrew/bin/mame',
+      '/opt/homebrew/bin/mame',
+    ]);
+    expect(targets.map((target) => target.args.at(-1))).toEqual([
+      '/Library/Arcade/games/nes-demo/content/Demo.nes',
+      '/Library/Arcade/games/snes-demo/content/Demo.sfc',
+      '/Library/Arcade/games/atari-demo/content/Demo.a26',
+      '/Library/Arcade/games/genesis-demo/content/Demo.gen',
+      '/Library/Arcade/games/c64-demo/content/Demo.d64',
+      '-nowindow',
+      '-nowindow',
+    ]);
+    expect(targets.at(-2)?.args).toEqual(expect.arrayContaining([
+      'apple2e', '-rompath', '/Library/Arcade/firmware/apple2',
+      '-flop1', '/Library/Arcade/games/apple2-demo/content/Demo.woz',
+    ]));
+    expect(targets.at(-1)?.args).toEqual(expect.arrayContaining([
+      'apple2gs', '-rompath', '/Library/Arcade/firmware/apple2',
+      '-flop3', '/Library/Arcade/games/apple2gs-demo/content/Demo.2mg',
+    ]));
   });
 
   it('does not allow catalog ids, executable paths, or arguments', () => {

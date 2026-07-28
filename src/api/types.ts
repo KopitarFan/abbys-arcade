@@ -1,4 +1,5 @@
-export type Platform = 'n64' | 'amiga' | 'dos' | 'gamecube' | 'created';
+export type EmulatorPlatform = 'n64' | 'amiga' | 'dos' | 'gamecube' | 'nes' | 'snes' | 'atari2600' | 'genesis' | 'c64' | 'apple2' | 'apple2gs';
+export type Platform = EmulatorPlatform | 'created';
 export type InputKind = 'controller' | 'mouse' | 'keyboard';
 export type InstallState = 'available' | 'installing' | 'installed' | 'failed';
 
@@ -59,8 +60,8 @@ export interface ImportPreview {
   suggestedId: string;
   suggestedTitle: string;
   entries: string[];
-  candidates: { dos: string[]; amiga: string[]; n64: string[]; gamecube: string[] };
-  suggestedPlatform: 'dos' | 'amiga' | 'n64' | 'gamecube';
+  candidates: Record<EmulatorPlatform, string[]>;
+  suggestedPlatform: EmulatorPlatform;
   fileCount: number;
   sizeMb: number;
   warnings: string[];
@@ -70,7 +71,7 @@ export interface ImportApproval {
   token: string;
   id: string;
   title: string;
-  platform: 'dos' | 'amiga' | 'n64' | 'gamecube';
+  platform: EmulatorPlatform;
   description: string;
   entry: string;
   inputs: InputKind[];
@@ -89,8 +90,10 @@ export interface LibraryHealth {
   installed: number;
   valid: number;
   issues: string[];
-  runtimes?: { dos: boolean; amiga: boolean; n64: boolean; gamecube: boolean };
+  runtimes?: Record<EmulatorPlatform, boolean>;
   amigaFirmware?: boolean;
+  apple2Firmware?: boolean;
+  apple2gsFirmware?: boolean;
 }
 
 export interface ArcadeApi {

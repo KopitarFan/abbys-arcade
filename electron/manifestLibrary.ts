@@ -11,6 +11,13 @@ const entryPatterns = {
   amiga: /^[A-Za-z0-9][A-Za-z0-9_. '()[\]-]{0,159}\.adf$/i,
   n64: /^[A-Za-z0-9][A-Za-z0-9_. '()[\]-]{0,159}\.(z64|n64|v64)$/i,
   gamecube: /^[A-Za-z0-9][A-Za-z0-9_. '()[\]-]{0,159}\.(iso|gcm|rvz)$/i,
+  nes: /^[A-Za-z0-9][A-Za-z0-9_. '()[\]-]{0,159}\.nes$/i,
+  snes: /^[A-Za-z0-9][A-Za-z0-9_. '()[\]-]{0,159}\.(sfc|smc)$/i,
+  atari2600: /^[A-Za-z0-9][A-Za-z0-9_. '()[\]-]{0,159}\.(a26|bin)$/i,
+  genesis: /^[A-Za-z0-9][A-Za-z0-9_. '()[\]-]{0,159}\.(md|gen|bin)$/i,
+  c64: /^[A-Za-z0-9][A-Za-z0-9_. '()[\]-]{0,159}\.(d64|t64|prg|crt)$/i,
+  apple2: /^[A-Za-z0-9][A-Za-z0-9_. '()[\]-]{0,159}\.(dsk|do|po|nib|woz)$/i,
+  apple2gs: /^[A-Za-z0-9][A-Za-z0-9_. '()[\]-]{0,159}\.(dsk|do|po|nib|woz|2mg|moof)$/i,
 } as const;
 const artworkPattern = /^[A-Za-z0-9][A-Za-z0-9_.-]{0,79}\.(png|jpe?g|webp)$/i;
 const accents = ['violet', 'coral', 'mint', 'gold', 'blue'] as const;
@@ -21,12 +28,12 @@ export interface GameManifest {
   schemaVersion: 1;
   id: string;
   title: string;
-  platform: 'dos' | 'amiga' | 'n64' | 'gamecube';
+  platform: 'dos' | 'amiga' | 'n64' | 'gamecube' | 'nes' | 'snes' | 'atari2600' | 'genesis' | 'c64' | 'apple2' | 'apple2gs';
   description: string;
   inputs: Array<(typeof inputs)[number]>;
   presentation: { accent: (typeof accents)[number]; icon: (typeof icons)[number]; artwork?: string };
   launch: {
-    adapter: 'dosbox-x' | 'fs-uae' | 'mupen64plus' | 'dolphin';
+    adapter: 'dosbox-x' | 'fs-uae' | 'mupen64plus' | 'dolphin' | 'nestopia' | 'snes9x' | 'stella' | 'ares' | 'vice-x64sc' | 'mame-apple2e' | 'mame-apple2gs';
     entry: string;
     settings: {
       fullscreen: boolean;
@@ -47,7 +54,7 @@ export interface ImportPreview {
   suggestedId: string;
   suggestedTitle: string;
   entries: string[];
-  candidates: { dos: string[]; amiga: string[]; n64: string[]; gamecube: string[] };
+  candidates: Record<GameManifest['platform'], string[]>;
   suggestedPlatform: GameManifest['platform'];
   fileCount: number;
   sizeMb: number;
@@ -73,7 +80,11 @@ export interface ImportApproval {
 }
 
 export function manifestFromApproval(approval: ImportApproval): GameManifest {
-  const adapter = approval.platform === 'dos' ? 'dosbox-x' : approval.platform === 'amiga' ? 'fs-uae' : approval.platform === 'n64' ? 'mupen64plus' : 'dolphin';
+  const adapters: Record<GameManifest['platform'], GameManifest['launch']['adapter']> = {
+    dos: 'dosbox-x', amiga: 'fs-uae', n64: 'mupen64plus', gamecube: 'dolphin',
+    nes: 'nestopia', snes: 'snes9x', atari2600: 'stella', genesis: 'ares', c64: 'vice-x64sc', apple2: 'mame-apple2e', apple2gs: 'mame-apple2gs',
+  };
+  const adapter = adapters[approval.platform];
   return validateManifest({
     schemaVersion: 1,
     id: approval.id,
@@ -131,12 +142,16 @@ export function validateManifest(value: unknown): GameManifest {
   if (!value || typeof value !== 'object') throw new Error('The game manifest is not an object.');
   const item = value as Record<string, any>;
   if (item.schemaVersion !== MANIFEST_VERSION) throw new Error('Unsupported game manifest version.');
-  const platform = oneOf(item.platform, ['dos', 'amiga', 'n64', 'gamecube'] as const, 'platform');
+  const platform = oneOf(item.platform, ['dos', 'amiga', 'n64', 'gamecube', 'nes', 'snes', 'atari2600', 'genesis', 'c64', 'apple2', 'apple2gs'] as const, 'platform');
   const cycles = item.launch?.settings?.cycles;
   if (platform === 'dos' && !(cycles === 'auto' || cycles === 'max' || (Number.isInteger(cycles) && cycles >= 300 && cycles <= 200_000))) {
     throw new Error('Invalid DOS CPU cycles setting.');
   }
-  const expectedAdapter = platform === 'dos' ? 'dosbox-x' : platform === 'amiga' ? 'fs-uae' : platform === 'n64' ? 'mupen64plus' : 'dolphin';
+  const expectedAdapters: Record<GameManifest['platform'], GameManifest['launch']['adapter']> = {
+    dos: 'dosbox-x', amiga: 'fs-uae', n64: 'mupen64plus', gamecube: 'dolphin',
+    nes: 'nestopia', snes: 'snes9x', atari2600: 'stella', genesis: 'ares', c64: 'vice-x64sc', apple2: 'mame-apple2e', apple2gs: 'mame-apple2gs',
+  };
+  const expectedAdapter = expectedAdapters[platform];
   if (item.launch?.adapter !== expectedAdapter) throw new Error('Invalid launch adapter for this platform.');
   const manifest: GameManifest = {
     schemaVersion: 1,
@@ -304,8 +319,16 @@ export async function inspectImportFolder(source: string): Promise<Omit<ImportPr
     amiga: topLevel.filter((file) => entryPatterns.amiga.test(file)).sort(),
     n64: topLevel.filter((file) => entryPatterns.n64.test(file)).sort(),
     gamecube: topLevel.filter((file) => entryPatterns.gamecube.test(file)).sort(),
+    nes: topLevel.filter((file) => entryPatterns.nes.test(file)).sort(),
+    snes: topLevel.filter((file) => entryPatterns.snes.test(file)).sort(),
+    atari2600: topLevel.filter((file) => entryPatterns.atari2600.test(file)).sort(),
+    genesis: topLevel.filter((file) => entryPatterns.genesis.test(file)).sort(),
+    c64: topLevel.filter((file) => entryPatterns.c64.test(file)).sort(),
+    apple2: topLevel.filter((file) => entryPatterns.apple2.test(file)).sort(),
+    apple2gs: topLevel.filter((file) => entryPatterns.apple2gs.test(file)).sort(),
   };
-  const suggestedPlatform: GameManifest['platform'] = candidates.gamecube.length ? 'gamecube' : candidates.amiga.length ? 'amiga' : candidates.n64.length ? 'n64' : 'dos';
+  const suggestionOrder: GameManifest['platform'][] = ['gamecube', 'amiga', 'n64', 'nes', 'snes', 'atari2600', 'genesis', 'c64', 'apple2', 'apple2gs', 'dos'];
+  const suggestedPlatform = suggestionOrder.find((platform) => candidates[platform].length) ?? 'dos';
   const topLevelEntries = candidates[suggestedPlatform];
   const folderName = path.basename(root);
   const suggestedId = folderName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 80) || 'dos-game';
@@ -318,7 +341,7 @@ export async function inspectImportFolder(source: string): Promise<Omit<ImportPr
     suggestedPlatform,
     fileCount: files.length,
     sizeMb: Math.round(bytes / 1024 / 1024 * 10) / 10,
-    warnings: topLevelEntries.length ? [] : ['No supported top-level DOS, Amiga, N64, or GameCube start file was found.'],
+    warnings: topLevelEntries.length ? [] : ['No supported top-level game file was found.'],
   };
 }
 
