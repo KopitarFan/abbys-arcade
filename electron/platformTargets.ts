@@ -60,7 +60,7 @@ export function getPlatformTarget(
         '--set', `Core[SaveStatePath]=${path.join(gameRoot, 'saves')}`,
         path.join(content, manifest.launch.entry),
       ]),
-    } : {
+    } : manifest.platform === 'gamecube' ? {
       executable: platform === 'darwin' ? '/Applications/Dolphin.app/Contents/MacOS/Dolphin' : '/usr/bin/dolphin-emu',
       gameChrome: true,
       args: Object.freeze([
@@ -69,6 +69,56 @@ export function getPlatformTarget(
         '--video_backend', String(manifest.launch.settings.videoBackend),
         '--config', `Dolphin.Display.Fullscreen=${manifest.launch.settings.fullscreen ? 'True' : 'False'}`,
         '--exec', path.join(content, manifest.launch.entry),
+      ]),
+    } : manifest.platform === 'nes' ? {
+      executable: path.join(prefix, 'nestopia'),
+      gameChrome: true,
+      args: Object.freeze([path.join(content, manifest.launch.entry)]),
+    } : manifest.platform === 'snes' ? {
+      executable: platform === 'darwin' ? '/Applications/Snes9x.app/Contents/MacOS/Snes9x' : '/usr/bin/snes9x',
+      gameChrome: true,
+      args: Object.freeze([path.join(content, manifest.launch.entry)]),
+    } : manifest.platform === 'atari2600' ? {
+      executable: path.join(prefix, 'stella'),
+      gameChrome: true,
+      args: Object.freeze([
+        '-fullscreen', manifest.launch.settings.fullscreen ? '1' : '0',
+        path.join(content, manifest.launch.entry),
+      ]),
+    } : manifest.platform === 'genesis' ? {
+      executable: platform === 'darwin' ? '/Applications/ares.app/Contents/MacOS/ares' : '/usr/bin/ares',
+      gameChrome: true,
+      args: Object.freeze([
+        ...(manifest.launch.settings.fullscreen ? ['--fullscreen'] : []),
+        path.join(content, manifest.launch.entry),
+      ]),
+    } : manifest.platform === 'c64' ? {
+      executable: path.join(prefix, 'x64sc'),
+      gameChrome: true,
+      args: Object.freeze([
+        manifest.launch.settings.fullscreen ? '-fullscreen' : '+fullscreen',
+        '-autostart', path.join(content, manifest.launch.entry),
+      ]),
+    } : manifest.platform === 'apple2' ? {
+      executable: path.join(prefix, 'mame'),
+      gameChrome: true,
+      args: Object.freeze([
+        'apple2e',
+        '-skip_gameinfo',
+        '-rompath', path.join(path.dirname(gamesRoot), 'firmware', 'apple2'),
+        '-flop1', path.join(content, manifest.launch.entry),
+        manifest.launch.settings.fullscreen ? '-nowindow' : '-window',
+      ]),
+    } : {
+      executable: path.join(prefix, 'mame'),
+      gameChrome: true,
+      args: Object.freeze([
+        'apple2gs',
+        '-skip_gameinfo',
+        '-rompath', path.join(path.dirname(gamesRoot), 'firmware', 'apple2'),
+        ['.2mg', '.moof'].includes(path.extname(manifest.launch.entry).toLowerCase()) ? '-flop3' : '-flop1',
+        path.join(content, manifest.launch.entry),
+        manifest.launch.settings.fullscreen ? '-nowindow' : '-window',
       ]),
     },
   ) : undefined;

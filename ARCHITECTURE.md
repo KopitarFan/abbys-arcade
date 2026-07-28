@@ -125,12 +125,19 @@ contains child-facing metadata, a DOSBox-X adapter identifier, a simple DOS star
 filename, constrained emulator settings, source provenance, favorites, and play
 history. Electron validates manifests before discovery or launch.
 
-Version 1 currently supports four adapter profiles:
+Version 1 currently supports eleven adapter profiles:
 
 - DOSBox-X with top-level `.BAT`, `.EXE`, or `.COM` entry files;
 - FS-UAE with Amiga `.adf` floppy images and parent-supplied Kickstart firmware;
 - Mupen64Plus with `.z64`, `.n64`, or `.v64` cartridge images;
 - Dolphin with GameCube `.iso`, `.gcm`, or `.rvz` disc images and isolated user data.
+- Nestopia UE with NES `.nes` cartridge images;
+- Snes9x with SNES `.sfc` or `.smc` cartridge images;
+- Stella with Atari 2600 `.a26` or `.bin` cartridge images;
+- ares with Sega Genesis `.md`, `.gen`, or `.bin` cartridge images;
+- VICE x64sc with Commodore 64 `.d64`, `.t64`, `.prg`, or `.crt` media.
+- MAME’s Apple IIe driver with `.dsk`, `.do`, `.po`, `.nib`, or `.woz` disk images and a parent-supplied `apple2e.zip` ROM set.
+- MAME’s Apple IIgs ROM 03 driver with common Apple disk images plus `.2mg` and `.moof`, using a parent-supplied `apple2gs.zip` ROM set.
 
 Security invariants:
 

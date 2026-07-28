@@ -7,7 +7,7 @@ const defaultApproval = (preview: ImportPreview): ImportApproval => ({
   id: preview.suggestedId,
   title: preview.suggestedTitle,
   platform: preview.suggestedPlatform,
-  description: `A DOS adventure from the parent library.`,
+  description: `A ${preview.suggestedPlatform.toUpperCase()} adventure from the parent library.`,
   entry: preview.entries[0] ?? '',
   inputs: preview.suggestedPlatform === 'dos' ? ['keyboard'] : ['controller'],
   accent: 'violet',
@@ -105,12 +105,19 @@ export function ParentScreen({ freeSpaceGb, games, onGamesChanged }: {
         <span className={health?.runtimes?.amiga && health?.amigaFirmware ? 'is-ready' : 'is-warning'}><strong>Amiga</strong>{!health?.runtimes?.amiga ? 'Runtime missing' : health?.amigaFirmware ? 'Ready' : 'Add Kickstart ROM'}</span>
         <span className={health?.runtimes?.n64 ? 'is-ready' : 'is-missing'}><strong>N64</strong>{health?.runtimes?.n64 ? 'Ready' : 'Runtime missing'}</span>
         <span className={health?.runtimes?.gamecube ? 'is-ready' : 'is-missing'}><strong>GameCube</strong>{health?.runtimes?.gamecube ? 'Ready' : 'Runtime missing'}</span>
+        <span className={health?.runtimes?.nes ? 'is-ready' : 'is-missing'}><strong>NES</strong>{health?.runtimes?.nes ? 'Ready' : 'Runtime missing'}</span>
+        <span className={health?.runtimes?.snes ? 'is-ready' : 'is-missing'}><strong>SNES</strong>{health?.runtimes?.snes ? 'Ready' : 'Runtime missing'}</span>
+        <span className={health?.runtimes?.atari2600 ? 'is-ready' : 'is-missing'}><strong>Atari 2600</strong>{health?.runtimes?.atari2600 ? 'Ready' : 'Runtime missing'}</span>
+        <span className={health?.runtimes?.genesis ? 'is-ready' : 'is-missing'}><strong>Genesis</strong>{health?.runtimes?.genesis ? 'Ready' : 'Runtime missing'}</span>
+        <span className={health?.runtimes?.c64 ? 'is-ready' : 'is-missing'}><strong>C64</strong>{health?.runtimes?.c64 ? 'Ready' : 'Runtime missing'}</span>
+        <span className={health?.runtimes?.apple2 && health?.apple2Firmware ? 'is-ready' : 'is-warning'}><strong>Apple II</strong>{!health?.runtimes?.apple2 ? 'Runtime missing' : health?.apple2Firmware ? 'Ready' : 'Add Apple IIe ROMs'}</span>
+        <span className={health?.runtimes?.apple2gs && health?.apple2gsFirmware ? 'is-ready' : 'is-warning'}><strong>Apple IIgs</strong>{!health?.runtimes?.apple2gs ? 'Runtime missing' : health?.apple2gsFirmware ? 'Ready' : 'Add IIgs ROM 03'}</span>
       </div>
 
       <div className="parent-workspace">
         <section className="parent-panel">
           <div className="panel-heading"><div><span className="eyebrow"><FolderOpen /> Import</span><h2>Add a game</h2></div><button className="primary-button" onClick={chooseFolder}>Choose folder</button></div>
-          {!preview && <div className="import-empty"><FolderOpen /><p>Choose an unpacked DOS, Amiga, N64, or GameCube game folder. Nothing is copied until you approve it.</p></div>}
+          {!preview && <div className="import-empty"><FolderOpen /><p>Choose a folder containing one supported game file. Nothing is copied until you approve it.</p></div>}
           {preview && approval && (
             <div className="import-form">
               <div className="import-summary"><strong>{preview.folderName}</strong><span>{preview.fileCount} files · {preview.sizeMb} MB</span></div>
@@ -122,7 +129,7 @@ export function ParentScreen({ freeSpaceGb, games, onGamesChanged }: {
                 <label><span>Platform</span><select value={approval.platform} onChange={(e) => {
                   const platform = e.target.value as ImportApproval['platform'];
                   setApproval({ ...approval, platform, entry: preview.candidates[platform][0] ?? '', inputs: platform === 'dos' ? ['keyboard'] : ['controller'] });
-                }}><option value="dos">DOS</option><option value="amiga">Amiga</option><option value="n64">Nintendo 64</option><option value="gamecube">GameCube</option></select></label>
+                }}><option value="dos">DOS</option><option value="amiga">Amiga</option><option value="n64">Nintendo 64</option><option value="gamecube">GameCube</option><option value="nes">NES</option><option value="snes">SNES</option><option value="atari2600">Atari 2600</option><option value="genesis">Genesis</option><option value="c64">Commodore 64</option><option value="apple2">Apple II</option><option value="apple2gs">Apple IIgs</option></select></label>
                 <label><span>Start file</span><select value={approval.entry} onChange={(e) => setApproval({ ...approval, entry: e.target.value })}>{preview.candidates[approval.platform].map((entry) => <option key={entry}>{entry}</option>)}</select></label>
                 {approval.platform === 'dos' && <label><span>CPU speed</span><select value={approval.cycles} onChange={(e) => setApproval({ ...approval, cycles: e.target.value as 'auto' | 'max' })}><option value="auto">Automatic</option><option value="max">Maximum</option></select></label>}
                 {approval.platform === 'amiga' && <label><span>Amiga model</span><select value={approval.amigaModel} onChange={(e) => setApproval({ ...approval, amigaModel: e.target.value as ImportApproval['amigaModel'] })}><option>A500</option><option>A500+</option><option>A600</option><option>A1200</option></select></label>}

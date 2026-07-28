@@ -23,6 +23,13 @@ export function PlayScreen({ games, health, onLaunch, onFavorite }: {
         <div className="system-card system-card--amiga"><span>AMIGA</span><strong>{health?.runtimes?.amiga && health?.amigaFirmware ? 'Ready for adventures' : health?.runtimes?.amiga ? 'Needs grown-up setup' : 'Getting ready'}</strong></div>
         <div className="system-card system-card--n64"><span>N64</span><strong>{health?.runtimes?.n64 ? 'Ready for adventures' : 'Getting ready'}</strong></div>
         <div className="system-card system-card--gamecube"><span>GAMECUBE</span><strong>{health?.runtimes?.gamecube ? 'Ready for adventures' : 'Getting ready'}</strong></div>
+        <div className="system-card system-card--nes"><span>NES</span><strong>{health?.runtimes?.nes ? 'Ready for adventures' : 'Getting ready'}</strong></div>
+        <div className="system-card system-card--snes"><span>SNES</span><strong>{health?.runtimes?.snes ? 'Ready for adventures' : 'Getting ready'}</strong></div>
+        <div className="system-card system-card--atari"><span>ATARI 2600</span><strong>{health?.runtimes?.atari2600 ? 'Ready for adventures' : 'Getting ready'}</strong></div>
+        <div className="system-card system-card--genesis"><span>GENESIS</span><strong>{health?.runtimes?.genesis ? 'Ready for adventures' : 'Getting ready'}</strong></div>
+        <div className="system-card system-card--c64"><span>C64</span><strong>{health?.runtimes?.c64 ? 'Ready for adventures' : 'Getting ready'}</strong></div>
+        <div className="system-card system-card--apple2"><span>APPLE II</span><strong>{health?.runtimes?.apple2 && health?.apple2Firmware ? 'Ready for adventures' : health?.runtimes?.apple2 ? 'Needs grown-up setup' : 'Getting ready'}</strong></div>
+        <div className="system-card system-card--apple2"><span>APPLE IIGS</span><strong>{health?.runtimes?.apple2gs && health?.apple2gsFirmware ? 'Ready for adventures' : health?.runtimes?.apple2gs ? 'Needs grown-up setup' : 'Getting ready'}</strong></div>
       </div>
       <article className="featured-game">
         <div className="featured-copy">

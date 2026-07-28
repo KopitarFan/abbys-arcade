@@ -34,8 +34,14 @@ const importTokens = new Map<string, string>();
 
 const emulatorExecutable = (platform: GameManifest['platform']) => {
   if (platform === 'gamecube') return process.platform === 'darwin' ? '/Applications/Dolphin.app/Contents/MacOS/Dolphin' : '/usr/bin/dolphin-emu';
+  if (platform === 'snes') return process.platform === 'darwin' ? '/Applications/Snes9x.app/Contents/MacOS/Snes9x' : '/usr/bin/snes9x';
+  if (platform === 'genesis') return process.platform === 'darwin' ? '/Applications/ares.app/Contents/MacOS/ares' : '/usr/bin/ares';
   const prefix = process.platform === 'darwin' ? process.arch === 'arm64' ? '/opt/homebrew/bin' : '/usr/local/bin' : '/usr/bin';
-  return path.join(prefix, platform === 'dos' ? 'dosbox-x' : platform === 'amiga' ? 'fs-uae' : 'mupen64plus');
+  const binaries: Partial<Record<GameManifest['platform'], string>> = {
+    dos: 'dosbox-x', amiga: 'fs-uae', n64: 'mupen64plus', nes: 'nestopia',
+    atari2600: 'stella', c64: 'x64sc', apple2: 'mame', apple2gs: 'mame',
+  };
+  return path.join(prefix, binaries[platform] ?? platform);
 };
 
 const hasAmigaFirmware = async () => {
@@ -43,10 +49,26 @@ const hasAmigaFirmware = async () => {
   catch { return false; }
 };
 
+const hasApple2Firmware = async () => {
+  try { return (await readdir(gameLibrary.apple2Firmware)).some((file) => file.toLowerCase() === 'apple2e.zip'); }
+  catch { return false; }
+};
+
+const hasApple2gsFirmware = async () => {
+  try { return (await readdir(gameLibrary.apple2Firmware)).some((file) => file.toLowerCase() === 'apple2gs.zip'); }
+  catch { return false; }
+};
+
 const ensureRuntimeReady = async (manifest: GameManifest) => {
   await access(emulatorExecutable(manifest.platform));
   if (manifest.platform === 'amiga' && !await hasAmigaFirmware()) {
     throw new Error(`Amiga Kickstart firmware is required. Add a legally obtained .rom file to ${gameLibrary.amigaFirmware}`);
+  }
+  if (manifest.platform === 'apple2' && !await hasApple2Firmware()) {
+    throw new Error(`Apple IIe firmware is required. Add a legally obtained apple2e.zip ROM set to ${gameLibrary.apple2Firmware}`);
+  }
+  if (manifest.platform === 'apple2gs' && !await hasApple2gsFirmware()) {
+    throw new Error(`Apple IIgs ROM 03 firmware is required. Add a legally obtained apple2gs.zip ROM set to ${gameLibrary.apple2Firmware}`);
   }
 };
 
@@ -294,11 +316,15 @@ app.whenReady().then(async () => {
   });
   ipcMain.handle('arcade:get-library-health', async () => {
     const audit = await auditGameLibrary(gameLibrary);
-    const runtimes = await Promise.all((['dos', 'amiga', 'n64', 'gamecube'] as const).map(async (platform) => {
+    const runtimes = await Promise.all((['dos', 'amiga', 'n64', 'gamecube', 'nes', 'snes', 'atari2600', 'genesis', 'c64', 'apple2', 'apple2gs'] as const).map(async (platform) => {
       try { await access(emulatorExecutable(platform)); return [platform, true] as const; }
       catch { return [platform, false] as const; }
     }));
-    return { root: gameLibrary.root, ...audit, runtimes: Object.fromEntries(runtimes), amigaFirmware: await hasAmigaFirmware() };
+    return {
+      root: gameLibrary.root, ...audit, runtimes: Object.fromEntries(runtimes),
+      amigaFirmware: await hasAmigaFirmware(), apple2Firmware: await hasApple2Firmware(),
+      apple2gsFirmware: await hasApple2gsFirmware(),
+    };
   });
 
   ipcMain.handle('arcade:launch-game', async (_event, gameId: unknown) => {
